@@ -101,6 +101,7 @@ sources += [
     'src/backend/UserModel.cpp',
     'src/backend/SystemPower.cpp',
     'src/backend/SystemBattery.cpp',
+    'src/backend/WallpaperProvider.cpp',
     'src/backend/LayerShell.cpp',
 ]
 
@@ -111,6 +112,7 @@ moc_headers = [
     'src/backend/UserModel.h',
     'src/backend/SystemPower.h',
     'src/backend/SystemBattery.h',
+    'src/backend/WallpaperProvider.h',
     'src/backend/LayerShell.h',
 ]
 
