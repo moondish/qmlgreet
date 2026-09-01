@@ -22,7 +22,7 @@ QMLGreet runs natively on Wayland compositors (such as Hyprland or Sway) using t
     * Supports standard `.colors` schemes (KDE style).
     * Configurable font family and base font size.
     * Support for custom icon themes.
-    * Set custom wallpapers with automatic blur effects.
+    * Set custom wallpapers with automatic blur effects, or pick a random wallpaper from a directory.
     * Configure a shared avatar image or a per-user avatar path pattern.
 - Session Management:
     * Automatic discovery of Wayland sessions from XDG data directories.

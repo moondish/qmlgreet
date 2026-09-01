@@ -15,6 +15,7 @@
 #include "backend/SystemPower.h"
 #include "backend/LayerShell.h"
 #include "backend/SystemBattery.h"
+#include "backend/WallpaperProvider.h"
 
 // Custom message handler to redirect Qt debug output to syslog and file
 void syslogMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
@@ -110,6 +111,7 @@ int main(int argc, char *argv[])
     // Default Configuration
     QString configPath = parser.value(configOption);
     QString backgroundImagePath;
+    QString wallpaperDir;
     QString defaultSession = "";
     QString avatarImagePath = "";
     bool showAvatars = true;
@@ -125,6 +127,7 @@ int main(int argc, char *argv[])
 
         config.beginGroup("Appearance");
         backgroundImagePath = config.value("BackgroundImage", "").toString();
+        wallpaperDir = config.value("WallpaperDir", "").toString();
         avatarImagePath = config.value("AvatarImage", avatarImagePath).toString();
         blurEnabled = config.value("BlurEnabled", blurEnabled).toBool();
         overlayEnabled = config.value("OverlayEnabled", overlayEnabled).toBool();
@@ -150,11 +153,18 @@ int main(int argc, char *argv[])
         defaultSession = config.value("DefaultSession", "").toString();
     }
 
+    // Resolve the background image. When a wallpaper directory is configured,
+    // pick a random image from it; otherwise fall back to the static image.
+    WallpaperProvider wallpaperProvider;
+    wallpaperProvider.setFallbackImage(backgroundImagePath);
+    wallpaperProvider.setDirectory(wallpaperDir);
+    const QString resolvedBackgroundImage = wallpaperProvider.currentImagePath();
+
     // Set background image
     UserModel userModel(avatarImagePath, &app);
 
     QQmlApplicationEngine engine;
-    engine.rootContext()->setContextProperty("ConfigBackgroundImage", backgroundImagePath);
+    engine.rootContext()->setContextProperty("ConfigBackgroundImage", resolvedBackgroundImage);
     engine.rootContext()->setContextProperty("ConfigShowAvatars", showAvatars);
     engine.rootContext()->setContextProperty("ConfigDebugBattery", debugBattery);
     engine.rootContext()->setContextProperty("ConfigBlurEnabled", blurEnabled);
