@@ -666,6 +666,10 @@ Window {
                 icon.name: "system-suspend"
                 display: AbstractButton.IconOnly
                 visible: power.canSuspend()
+                Accessible.name: qsTr("Suspend")
+                ToolTip.visible: hovered
+                ToolTip.text: qsTr("Suspend")
+                ToolTip.delay: 400
                 Keys.onLeftPressed: root.movePowerFocus(suspendButton, -1, false)
                 Keys.onRightPressed: root.movePowerFocus(suspendButton, 1, false)
                 Keys.onUpPressed: root.focusLoginSelection()
@@ -689,6 +693,10 @@ Window {
                 icon.name: "system-suspend-hibernate"
                 display: AbstractButton.IconOnly
                 visible: power.canHibernate()
+                Accessible.name: qsTr("Hibernate")
+                ToolTip.visible: hovered
+                ToolTip.text: qsTr("Hibernate")
+                ToolTip.delay: 400
                 Keys.onLeftPressed: root.movePowerFocus(hibernateButton, -1, false)
                 Keys.onRightPressed: root.movePowerFocus(hibernateButton, 1, false)
                 Keys.onUpPressed: root.focusLoginSelection()
@@ -712,6 +720,10 @@ Window {
                 icon.name: "system-suspend-hibernate"
                 display: AbstractButton.IconOnly
                 visible: power.canHybridSleep()
+                Accessible.name: qsTr("Hybrid Sleep")
+                ToolTip.visible: hovered
+                ToolTip.text: qsTr("Hybrid Sleep")
+                ToolTip.delay: 400
                 Keys.onLeftPressed: root.movePowerFocus(hybridSleepButton, -1, false)
                 Keys.onRightPressed: root.movePowerFocus(hybridSleepButton, 1, false)
                 Keys.onUpPressed: root.focusLoginSelection()
@@ -735,6 +747,10 @@ Window {
                 icon.name: "system-suspend-hibernate"
                 display: AbstractButton.IconOnly
                 visible: power.canSuspendThenHibernate()
+                Accessible.name: qsTr("Suspend then Hibernate")
+                ToolTip.visible: hovered
+                ToolTip.text: qsTr("Suspend then Hibernate")
+                ToolTip.delay: 400
                 Keys.onLeftPressed: root.movePowerFocus(suspendThenHibernateButton, -1, false)
                 Keys.onRightPressed: root.movePowerFocus(suspendThenHibernateButton, 1, false)
                 Keys.onUpPressed: root.focusLoginSelection()
@@ -758,6 +774,10 @@ Window {
                 icon.name: "system-reboot"
                 display: AbstractButton.IconOnly
                 visible: power.canReboot()
+                Accessible.name: qsTr("Reboot")
+                ToolTip.visible: hovered
+                ToolTip.text: qsTr("Reboot")
+                ToolTip.delay: 400
                 Keys.onLeftPressed: root.movePowerFocus(rebootButton, -1, false)
                 Keys.onRightPressed: root.movePowerFocus(rebootButton, 1, false)
                 Keys.onUpPressed: root.focusLoginSelection()
@@ -781,6 +801,10 @@ Window {
                 icon.name: "system-shutdown"
                 display: AbstractButton.IconOnly
                 visible: power.canPowerOff()
+                Accessible.name: qsTr("Power Off")
+                ToolTip.visible: hovered
+                ToolTip.text: qsTr("Power Off")
+                ToolTip.delay: 400
                 Keys.onLeftPressed: root.movePowerFocus(shutdownButton, -1, false)
                 Keys.onRightPressed: root.movePowerFocus(shutdownButton, 1, false)
                 Keys.onUpPressed: root.focusLoginSelection()
