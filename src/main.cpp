@@ -4,6 +4,7 @@
 #include <QQmlContext>
 #include <QSettings>
 #include <QFile>
+#include <QIcon>
 #include <QCommandLineParser>
 #include <QTextStream>
 #include <QDateTime>
@@ -109,11 +110,12 @@ int main(int argc, char *argv[])
     qmlRegisterType<SystemBattery>("QmlGreet", 1, 0, "SystemBattery");
 
     // Default Configuration
-    QString configPath = parser.value(configOption);
+    const QString configPath = parser.value(configOption);
     QString backgroundImagePath;
     QString wallpaperDir;
-    QString defaultSession = "";
-    QString avatarImagePath = "";
+    QString iconTheme;
+    QString defaultSession;
+    QString avatarImagePath;
     bool showAvatars = true;
     bool debugBattery = false;
     bool blurEnabled = true;
@@ -121,36 +123,43 @@ int main(int argc, char *argv[])
     double overlayOpacity = 0.76;
     QString iconMode = QStringLiteral("system");
     bool lowercaseDate = false;
+
     // Load Configuration
-    if (QFile::exists(configPath)) {
-        QSettings config(configPath, QSettings::IniFormat);
+    QSettings config(configPath, QSettings::IniFormat);
 
-        config.beginGroup("Appearance");
-        backgroundImagePath = config.value("BackgroundImage", "").toString();
-        wallpaperDir = config.value("WallpaperDir", "").toString();
-        avatarImagePath = config.value("AvatarImage", avatarImagePath).toString();
-        blurEnabled = config.value("BlurEnabled", blurEnabled).toBool();
-        overlayEnabled = config.value("OverlayEnabled", overlayEnabled).toBool();
-        overlayOpacity = qBound(0.0, config.value("OverlayOpacity", overlayOpacity).toDouble(), 1.0);
-        iconMode = config.value("IconMode", iconMode).toString().trimmed().toLower() == QStringLiteral("nerd")
-            ? QStringLiteral("nerd") : QStringLiteral("system");
-        config.endGroup();
+    config.beginGroup(QStringLiteral("General"));
+    defaultSession = config.value(QStringLiteral("DefaultSession"), defaultSession).toString();
+    config.endGroup();
 
-        config.beginGroup("Debug");
-        debugBattery = config.value("debugBattery", debugBattery).toBool();
-        config.endGroup();
+    config.beginGroup(QStringLiteral("Appearance"));
+    backgroundImagePath = config.value(QStringLiteral("BackgroundImage"), backgroundImagePath).toString();
+    wallpaperDir = config.value(QStringLiteral("WallpaperDir"), wallpaperDir).toString();
+    iconTheme = config.value(QStringLiteral("IconTheme"), iconTheme).toString().trimmed();
+    avatarImagePath = config.value(QStringLiteral("AvatarImage"), avatarImagePath).toString();
+    blurEnabled = config.value(QStringLiteral("BlurEnabled"), blurEnabled).toBool();
+    overlayEnabled = config.value(QStringLiteral("OverlayEnabled"), overlayEnabled).toBool();
+    overlayOpacity = qBound(0.0, config.value(QStringLiteral("OverlayOpacity"), overlayOpacity).toDouble(), 1.0);
+    iconMode = config.value(QStringLiteral("IconMode"), iconMode).toString().trimmed().toLower() == QStringLiteral("nerd")
+        ? QStringLiteral("nerd") : QStringLiteral("system");
+    config.endGroup();
 
-        config.beginGroup("Clock");
-        lowercaseDate = config.value("LowercaseDate", lowercaseDate).toBool();
-        config.endGroup();
+    config.beginGroup(QStringLiteral("Debug"));
+    debugBattery = config.value(QStringLiteral("debugBattery"), debugBattery).toBool();
+    config.endGroup();
 
-        config.beginGroup("Behavior");
-        showAvatars = config.value("ShowAvatars", showAvatars).toBool();
-        config.endGroup();
+    config.beginGroup(QStringLiteral("Clock"));
+    lowercaseDate = config.value(QStringLiteral("LowercaseDate"), lowercaseDate).toBool();
+    config.endGroup();
 
+    config.beginGroup(QStringLiteral("Behavior"));
+    showAvatars = config.value(QStringLiteral("ShowAvatars"), showAvatars).toBool();
+    config.endGroup();
 
-        // Read DefaultSession from root level (QSettings doesn't recognize [General] group)
-        defaultSession = config.value("DefaultSession", "").toString();
+    // Explicitly set the icon theme so icon resolution does not rely on
+    // the greeter user's (possibly incomplete) desktop environment.
+    if (!iconTheme.isEmpty()) {
+        QIcon::setThemeName(iconTheme);
+        qInfo() << "Icon theme set to:" << iconTheme;
     }
 
     // Resolve the background image. When a wallpaper directory is configured,
