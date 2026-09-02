@@ -11,6 +11,8 @@
 #include <QTextStream>
 #include <QDateTime>
 #include <QtGlobal>
+#include <KLocalizedContext>
+#include <KLocalizedString>
 #include <syslog.h>
 #include "backend/AuthWrapper.h"
 #include "backend/SessionModel.h"
@@ -78,6 +80,7 @@ void syslogMessageHandler(QtMsgType type, const QMessageLogContext &context, con
 
 int main(int argc, char *argv[])
 {
+    KLocalizedString::setApplicationDomain("qmlgreet");
     // Open syslog connection
     openlog("qmlgreet", LOG_PID | LOG_CONS, LOG_USER);
 
@@ -157,6 +160,7 @@ int main(int argc, char *argv[])
     UserModel userModel(avatarImagePath, &app);
 
     QQmlApplicationEngine engine;
+    engine.rootContext()->setContextObject(new KLocalizedContext(&engine));
     engine.rootContext()->setContextProperty("ConfigBackgroundImage", backgroundImagePath);
     engine.rootContext()->setContextProperty("ConfigShowAvatars", showAvatars);
     engine.rootContext()->setContextProperty("ConfigDebugBattery", debugBattery);

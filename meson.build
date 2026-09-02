@@ -40,6 +40,7 @@ qt6_core5compat = dependency('Qt6Core5Compat', version: '>=6.9', required: true)
 # The QML plugin needs the main library to be loaded for type registration
 # Force link with --no-as-needed to ensure the library is loaded at runtime
 mauikit_dep = dependency('MauiKit4', version: '>=4.0.4', required: true)
+kf6_i18n_dep = dependency('KF6I18n', version: '>=6.0', required: true, include_type: 'system')
 mauikit_lib = declare_dependency(
     dependencies: mauikit_dep,
     link_args: ['-Wl,--no-as-needed']
@@ -136,7 +137,7 @@ executable(
     'qmlgreet',
     sources + protocol_srcs + moc_files,
     qml_resources,
-    dependencies: [qt_deps, qt6_core5compat, thread_dep, wl_client_dep, mauikit_lib],
+    dependencies: [qt_deps, qt6_core5compat, thread_dep, wl_client_dep, mauikit_lib, kf6_i18n_dep],
     include_directories: qt_private_include,
     install: true
 )

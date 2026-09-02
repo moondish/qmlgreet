@@ -154,12 +154,14 @@ Window {
     }
 
     Component.onCompleted: {
-        layerShell.activate()
         root.visible = true
         if (userModel.rowCount() > 0) userCombo.currentIndex = 0
 
         selectDefaultSession()
-        Qt.callLater(function() { focusInitialControl() })
+        Qt.callLater(function() {
+            layerShell.activate()
+            focusInitialControl()
+        })
     }
 
     Connections {
@@ -438,7 +440,7 @@ Window {
                     color: avatarButton.activeFocus ? Qt.rgba(1, 1, 1, 0.04) : "transparent"
                     border.color: (avatarButton.activeFocus || mouseArea.containsMouse) ? Maui.Theme.highlightColor : "transparent"
                     border.width: 3
-                    activeFocusOnTab: loginStack.currentIndex === 0 && mouseArea.enabled
+                    activeFocusOnTab: true
                     KeyNavigation.tab: root.firstVisiblePowerButton(userCombo)
                     KeyNavigation.backtab: sessionCombo
                     Behavior on border.color { ColorAnimation { duration: 150 } }
