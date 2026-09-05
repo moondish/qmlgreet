@@ -154,14 +154,12 @@ Window {
     }
 
     Component.onCompleted: {
+        layerShell.activate()
         root.visible = true
         if (userModel.rowCount() > 0) userCombo.currentIndex = 0
 
         selectDefaultSession()
-        Qt.callLater(function() {
-            layerShell.activate()
-            focusInitialControl()
-        })
+        Qt.callLater(function() { focusInitialControl() })
     }
 
     Connections {
