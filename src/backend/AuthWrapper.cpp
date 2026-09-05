@@ -378,11 +378,27 @@ void AuthWrapper::reset()
 QStringList AuthWrapper::prepareEnv()
 {
     QStringList env;
+    const QStringList sessionSpecificVariables = {
+        "DBUS_SESSION_BUS_ADDRESS",
+        "DISPLAY",
+        "GREETD_SOCK",
+        "HYPRLAND_INSTANCE_SIGNATURE",
+        "PATH",
+        "WAYLAND_DISPLAY",
+        "XDG_RUNTIME_DIR",
+        "XDG_SEAT",
+        "XDG_SEAT_PATH",
+        "XDG_SESSION_ID",
+        "XDG_SESSION_PATH",
+        "XDG_SESSION_TYPE",
+        "XDG_VTNR",
+    };
 
     // 1. Read from /etc/environment
     QSettings envSett("/etc/environment", QSettings::IniFormat);
     for (const QString &key : envSett.allKeys()) {
-        env << QString("%1=%2").arg(key).arg(envSett.value(key).toString());
+        if (!sessionSpecificVariables.contains(key))
+            env << QString("%1=%2").arg(key).arg(envSett.value(key).toString());
     }
 
     // 2. Read from /etc/environment.d/*.conf files
@@ -392,21 +408,16 @@ QStringList AuthWrapper::prepareEnv()
         for (const QFileInfo &info : files) {
             QSettings s(info.filePath(), QSettings::IniFormat);
             for (const QString &key : s.allKeys()) {
-                env << QString("%1=%2").arg(key).arg(s.value(key).toString());
+                if (!sessionSpecificVariables.contains(key))
+                    env << QString("%1=%2").arg(key).arg(s.value(key).toString());
             }
         }
     }
 
-    // 3. CRITICAL: Inherit vital variables from the current process
-    // greetd sets these up for us, and the session will fail without them
+    // 3. Inherit only non-session-specific values from the greeter.
+    // The authenticated login must provide its own runtime, seat, and VT context.
     if (qEnvironmentVariableIsSet("PATH"))
         env << "PATH=" + QString::fromLocal8Bit(qgetenv("PATH"));
-    if (qEnvironmentVariableIsSet("XDG_RUNTIME_DIR"))
-        env << "XDG_RUNTIME_DIR=" + QString::fromLocal8Bit(qgetenv("XDG_RUNTIME_DIR"));
-    if (qEnvironmentVariableIsSet("XDG_SEAT"))
-        env << "XDG_SEAT=" + QString::fromLocal8Bit(qgetenv("XDG_SEAT"));
-    if (qEnvironmentVariableIsSet("XDG_VTNR"))
-        env << "XDG_VTNR=" + QString::fromLocal8Bit(qgetenv("XDG_VTNR"));
 
     // 4. Force Wayland session type (recommended for Nitrux/Maui)
     env << "XDG_SESSION_TYPE=wayland";
